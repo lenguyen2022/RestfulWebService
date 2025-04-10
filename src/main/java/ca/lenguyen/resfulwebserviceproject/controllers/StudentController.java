@@ -12,7 +12,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@RequestMapping("/api/students")
+@RequestMapping("/api/students") // default URL: http://localhost:8080/api/students
 public class StudentController {
 
     private static final Logger log = LoggerFactory.getLogger(StudentController.class);
@@ -37,35 +37,36 @@ public class StudentController {
 
 
     @PostMapping(consumes = "application/json")
-    public String postStudent(@RequestBody Student student) {
-        return "http://localhost:8080/students/" + da.save(student);
+    public Student postStudent(@RequestBody Student student) {
+        return da.save(student);
     }
 
     @PutMapping(consumes = "application/json")
-    public String putStudentCollection(@RequestBody List<Student> studentList) {
-        da.deleteAll();
+    public Long putStudentCollection(@RequestBody List<Student> studentList) {
+        //da.deleteAll();
         da.saveAll(studentList);
-        return "Total Records: " + da.count();
+        return da.count();
     }
 
     @PutMapping("/{id}")
-    public String putIndividualStudent(@RequestBody Student student,@PathVariable Long id) {
+    public Long putIndividualStudent(@RequestBody Student student,@PathVariable Long id) {
         student.setId(id);
         da.save(student);
         log.info("student " + student);
-        return "Total Records: " + da.count();
+        return da.count();
     }
 
     @DeleteMapping("/{id}")
-    public String deleteIndividualStudent(@PathVariable Long id) {
+    public Long deleteIndividualStudent(@PathVariable Long id) {
+        log.info("delete","delete student " + id);
         da.deleteById(id);
-        return "Total Records: " + da.count();
+        return da.count();
     }
 
     @DeleteMapping
-    public String deleteAllStudent() {
+    public Long deleteAllStudent() {
         da.deleteAll();
-        return "Total Records: " + da.count();
+        return da.count();
     }
 
 
